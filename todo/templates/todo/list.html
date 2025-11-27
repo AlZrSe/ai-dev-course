@@ -1,0 +1,48 @@
+{% extends 'todo/base.html' %}
+
+{% block title %}My Todos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>My Todos</h1>
+    <a href="{% url 'todo:create' %}" class="btn btn-primary">Add New Todo</a>
+</div>
+
+{% if todos %}
+    <div class="row">
+        {% for todo in todos %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {% if todo.completed %}
+                                <s>{{ todo.title }}</s>
+                            {% else %}
+                                {{ todo.title }}
+                            {% endif %}
+                        </h5>
+                        {% if todo.description %}
+                            <p class="card-text">{{ todo.description|truncatewords:20 }}</p>
+                        {% endif %}
+                        <p class="text-muted">
+                            <small>Created: {{ todo.created_at|date:"M d, Y H:i" }}</small>
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'todo:toggle_complete' todo.pk %}" class="btn btn-sm {% if todo.completed %}btn-warning{% else %}btn-success{% endif %}">
+                                {% if todo.completed %}Mark Incomplete{% else %}Mark Complete{% endif %}
+                            </a>
+                            <a href="{% url 'todo:update' todo.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="{% url 'todo:delete' todo.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center">
+        <p>You don't have any todos yet.</p>
+        <a href="{% url 'todo:create' %}" class="btn btn-primary">Create your first todo</a>
+    </div>
+{% endif %}
+{% endblock %}
